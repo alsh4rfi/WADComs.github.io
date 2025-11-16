@@ -3,7 +3,240 @@
 	color: #ff0000 !important;
 	border-color: #ff0000 !important;
 }
+.param-inputs {
+	background: #f5f5f5;
+	padding: 15px;
+	margin-bottom: 20px;
+	border-radius: 5px;
+	border: 1px solid #ddd;
+}
+.param-inputs h3 {
+	margin-top: 0;
+	margin-bottom: 10px;
+	color: #333;
+}
+.param-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 10px;
+}
+.param-field {
+	display: flex;
+	flex-direction: column;
+}
+.param-field label {
+	font-size: 12px;
+	font-weight: bold;
+	margin-bottom: 3px;
+	color: #555;
+}
+.param-field input, .param-field select {
+	padding: 6px 8px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	font-size: 13px;
+}
+.param-field input:focus, .param-field select:focus {
+	outline: none;
+	border-color: #07bf07;
+}
+.profile-controls {
+	display: flex;
+	gap: 10px;
+	margin-top: 10px;
+	flex-wrap: wrap;
+}
+.profile-controls button {
+	padding: 6px 12px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	background: white;
+	cursor: pointer;
+	font-size: 12px;
+}
+.profile-controls button:hover {
+	background: #e8e8e8;
+}
+.profile-controls button.primary {
+	background: #07bf07;
+	color: white;
+	border-color: #07bf07;
+}
+.profile-controls button.primary:hover {
+	background: #059905;
+}
+.highlight-replaced {
+	background-color: #d4f4dd;
+	padding: 2px 4px;
+	border-radius: 2px;
+	font-weight: 500;
+	color: #07bf07;
+}
+.history-panel {
+	background: #f9f9f9;
+	padding: 15px;
+	margin-bottom: 20px;
+	border-radius: 5px;
+	border: 1px solid #ddd;
+	max-height: 300px;
+	overflow-y: auto;
+}
+.history-panel h3 {
+	margin-top: 0;
+	margin-bottom: 10px;
+	color: #333;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.history-item {
+	padding: 8px;
+	margin-bottom: 8px;
+	background: white;
+	border-radius: 3px;
+	border-left: 3px solid #07bf07;
+	font-size: 12px;
+}
+.history-item .time {
+	color: #666;
+	font-size: 11px;
+	margin-bottom: 4px;
+}
+.history-item .command {
+	font-family: monospace;
+	color: #333;
+	word-break: break-all;
+}
+.history-toggle {
+	cursor: pointer;
+	color: #07bf07;
+	font-size: 12px;
+	text-decoration: underline;
+}
+.favorites-panel {
+	background: #f9f9f9;
+	padding: 15px;
+	margin-bottom: 20px;
+	border-radius: 5px;
+	border: 1px solid #ddd;
+	max-height: 400px;
+	overflow-y: auto;
+}
+.favorites-panel h3 {
+	margin-top: 0;
+	margin-bottom: 10px;
+	color: #333;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.favorite-item {
+	padding: 10px;
+	margin-bottom: 8px;
+	background: white;
+	border-radius: 3px;
+	border-left: 3px solid #07bf07;
+	font-size: 12px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.favorite-item .command {
+	font-family: monospace;
+	color: #333;
+	word-break: break-all;
+	flex: 1;
+}
+.favorite-item .actions {
+	display: flex;
+	gap: 8px;
+	margin-left: 10px;
+}
+.favorite-item button {
+	padding: 4px 8px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	background: white;
+	cursor: pointer;
+	font-size: 11px;
+}
+.favorite-item button:hover {
+	background: #e8e8e8;
+}
+.favorite-star {
+	cursor: pointer;
+	font-size: 18px;
+	color: #ccc;
+	margin-left: 8px;
+	user-select: none;
+}
+.favorite-star.active {
+	color: #07bf07;
+}
+.favorite-star:hover {
+	color: #07bf07;
+}
 </style>
+
+<div class="param-inputs">
+	<h3>Custom Parameters (auto-replaces in all commands)</h3>
+	<div class="param-grid">
+		<div class="param-field">
+			<label for="profile-select">Profile:</label>
+			<select id="profile-select">
+				<option value="default">Default</option>
+			</select>
+		</div>
+		<div class="param-field">
+			<label for="param-target-ip">Target IP:</label>
+			<input type="text" id="param-target-ip" placeholder="10.10.10.1" />
+		</div>
+		<div class="param-field">
+			<label for="param-attacker-ip">Attacker IP:</label>
+			<input type="text" id="param-attacker-ip" placeholder="10.10.10.2" />
+		</div>
+		<div class="param-field">
+			<label for="param-domain">Domain:</label>
+			<input type="text" id="param-domain" placeholder="test.local" />
+		</div>
+		<div class="param-field">
+			<label for="param-username">Username:</label>
+			<input type="text" id="param-username" placeholder="john" />
+		</div>
+		<div class="param-field">
+			<label for="param-password">Password:</label>
+			<input type="text" id="param-password" placeholder="password123" />
+		</div>
+	</div>
+	<div class="profile-controls">
+		<button onclick="saveProfile()" class="primary">Save Profile</button>
+		<button onclick="deleteProfile()">Delete Profile</button>
+		<button onclick="exportProfile()">Export</button>
+		<button onclick="importProfile()">Import</button>
+	</div>
+</div>
+
+<div class="favorites-panel" id="favorites-panel" style="display: none;">
+	<h3>
+		Favorites
+		<span class="history-toggle" onclick="clearFavorites()">Clear All</span>
+	</h3>
+	<div id="favorites-list"></div>
+</div>
+<div style="margin-bottom: 10px;">
+	<span class="history-toggle" onclick="toggleFavorites()">Show/Hide Favorites</span>
+</div>
+
+<div class="history-panel" id="history-panel" style="display: none;">
+	<h3>
+		Command History
+		<span class="history-toggle" onclick="clearHistory()">Clear All</span>
+	</h3>
+	<div id="history-list"></div>
+</div>
+<div style="margin-bottom: 10px;">
+	<span class="history-toggle" onclick="toggleHistory()">Show/Hide Command History</span>
+</div>
 
 <div id="bin-search-wrapper">
 
@@ -56,7 +289,7 @@
 	    {% assign sites = site.wadcoms | reverse %} 
             {% for file in sites %}
             <tr>
-		    <td><div class="bin-name"><div style="flex: 0 0 97%"><a href="{{ file.url }}" id="{{ file.url }}" style="text-decoration: none; color: DarkGreen;">{{ file.command | escape }}</a></div><div style="flex: 1;"><a href="javascript:void(0)" onClick="copyFunction('{{ file.url }}')"><img src="/assets/copy-button.svg" alt="Copy" title="Copy" id="{{ file.url }}_img"/></a></div></div><p style="margin-top: -12px;">{% include filter_list.html bin=file %}</p></td>
+		    <td><div class="bin-name"><div style="flex: 0 0 94%"><a href="{{ file.url }}" id="{{ file.url }}" style="text-decoration: none; color: DarkGreen;">{{ file.command | escape }}</a></div><div style="flex: 1; display: flex; gap: 4px;"><span class="favorite-star" id="{{ file.url }}_star" onclick="toggleFavorite('{{ file.url }}')" title="Add to favorites">☆</span><a href="javascript:void(0)" onClick="copyFunction('{{ file.url }}')"><img src="/assets/copy-button.svg" alt="Copy" title="Copy" id="{{ file.url }}_img"/></a></div></div><p style="margin-top: -12px;">{% include filter_list.html bin=file %}</p></td>
             </tr>
             {% endfor %}
         </tbody>
@@ -68,16 +301,384 @@
 
 <script>
 
+ // Function to replace parameters in command text
+ function replaceParameters(commandText, withHighlight = false) {
+	 var targetIP = document.getElementById('param-target-ip').value;
+	 var attackerIP = document.getElementById('param-attacker-ip').value;
+	 var domain = document.getElementById('param-domain').value;
+	 var username = document.getElementById('param-username').value;
+	 var password = document.getElementById('param-password').value;
+
+	 var result = commandText;
+
+	 // Replace target IP (10.10.10.1)
+	 if (targetIP) {
+		 var replacement = withHighlight ? '<span class="highlight-replaced">' + targetIP + '</span>' : targetIP;
+		 result = result.replace(/10\.10\.10\.1/g, replacement);
+	 }
+
+	 // Replace attacker IP (10.10.10.2)
+	 if (attackerIP) {
+		 var replacement = withHighlight ? '<span class="highlight-replaced">' + attackerIP + '</span>' : attackerIP;
+		 result = result.replace(/10\.10\.10\.2/g, replacement);
+	 }
+
+	 // Replace domain (test.local)
+	 if (domain) {
+		 var replacement = withHighlight ? '<span class="highlight-replaced">' + domain + '</span>' : domain;
+		 result = result.replace(/test\.local/g, replacement);
+	 }
+
+	 // Replace username (john)
+	 if (username) {
+		 var replacement = withHighlight ? '<span class="highlight-replaced">' + username + '</span>' : username;
+		 result = result.replace(/\bjohn\b/g, replacement);
+	 }
+
+	 // Replace password (password123)
+	 if (password) {
+		 var replacement = withHighlight ? '<span class="highlight-replaced">' + password + '</span>' : password;
+		 result = result.replace(/password123/g, replacement);
+	 }
+
+	 return result;
+ }
+
+ // Function to update all displayed commands
+ function updateAllCommands() {
+	 document.querySelectorAll('#bin-table tbody tr').forEach(function (row) {
+		 var commandLink = row.querySelector('.bin-name a');
+		 if (commandLink) {
+			 var originalCommand = commandLink.getAttribute('data-original');
+			 if (!originalCommand) {
+				 // Store original command on first run
+				 commandLink.setAttribute('data-original', commandLink.innerText);
+				 originalCommand = commandLink.innerText;
+			 }
+			 commandLink.innerHTML = replaceParameters(originalCommand, true);
+		 }
+	 });
+
+	 // Save parameters to localStorage
+	 saveParameters();
+ }
+
+ // Save parameters to localStorage
+ function saveParameters() {
+	 localStorage.setItem('param-target-ip', document.getElementById('param-target-ip').value);
+	 localStorage.setItem('param-attacker-ip', document.getElementById('param-attacker-ip').value);
+	 localStorage.setItem('param-domain', document.getElementById('param-domain').value);
+	 localStorage.setItem('param-username', document.getElementById('param-username').value);
+	 localStorage.setItem('param-password', document.getElementById('param-password').value);
+ }
+
+ // Load parameters from localStorage
+ function loadParameters() {
+	 var currentProfile = localStorage.getItem('current-profile') || 'default';
+	 var profileKey = 'profile-' + currentProfile;
+	 var profileData = localStorage.getItem(profileKey);
+	 
+	 if (profileData) {
+		 var data = JSON.parse(profileData);
+		 document.getElementById('param-target-ip').value = data.targetIP || '';
+		 document.getElementById('param-attacker-ip').value = data.attackerIP || '';
+		 document.getElementById('param-domain').value = data.domain || '';
+		 document.getElementById('param-username').value = data.username || '';
+		 document.getElementById('param-password').value = data.password || '';
+	 }
+ }
+
+ // Profile Management Functions
+ function getCurrentProfile() {
+	 return {
+		 targetIP: document.getElementById('param-target-ip').value,
+		 attackerIP: document.getElementById('param-attacker-ip').value,
+		 domain: document.getElementById('param-domain').value,
+		 username: document.getElementById('param-username').value,
+		 password: document.getElementById('param-password').value
+	 };
+ }
+
+ function saveProfile() {
+	 var profileName = prompt('Enter profile name:', localStorage.getItem('current-profile') || 'default');
+	 if (profileName) {
+		 var profileData = getCurrentProfile();
+		 localStorage.setItem('profile-' + profileName, JSON.stringify(profileData));
+		 localStorage.setItem('current-profile', profileName);
+		 loadProfileList();
+		 alert('Profile "' + profileName + '" saved!');
+	 }
+ }
+
+ function deleteProfile() {
+	 var currentProfile = document.getElementById('profile-select').value;
+	 if (currentProfile === 'default') {
+		 alert('Cannot delete the default profile');
+		 return;
+	 }
+	 if (confirm('Delete profile "' + currentProfile + '"?')) {
+		 localStorage.removeItem('profile-' + currentProfile);
+		 localStorage.setItem('current-profile', 'default');
+		 loadProfileList();
+		 loadParameters();
+		 updateAllCommands();
+	 }
+ }
+
+ function exportProfile() {
+	 var profileData = getCurrentProfile();
+	 var dataStr = JSON.stringify(profileData, null, 2);
+	 var dataBlob = new Blob([dataStr], {type: 'application/json'});
+	 var url = URL.createObjectURL(dataBlob);
+	 var link = document.createElement('a');
+	 link.href = url;
+	 link.download = 'wadcoms-profile.json';
+	 link.click();
+ }
+
+ function importProfile() {
+	 var input = document.createElement('input');
+	 input.type = 'file';
+	 input.accept = 'application/json';
+	 input.onchange = function(e) {
+		 var file = e.target.files[0];
+		 var reader = new FileReader();
+		 reader.onload = function(event) {
+			 try {
+				 var profileData = JSON.parse(event.target.result);
+				 document.getElementById('param-target-ip').value = profileData.targetIP || '';
+				 document.getElementById('param-attacker-ip').value = profileData.attackerIP || '';
+				 document.getElementById('param-domain').value = profileData.domain || '';
+				 document.getElementById('param-username').value = profileData.username || '';
+				 document.getElementById('param-password').value = profileData.password || '';
+				 updateAllCommands();
+				 alert('Profile imported successfully!');
+			 } catch (err) {
+				 alert('Error importing profile: ' + err.message);
+			 }
+		 };
+		 reader.readAsText(file);
+	 };
+	 input.click();
+ }
+
+ function loadProfileList() {
+	 var select = document.getElementById('profile-select');
+	 var currentProfile = localStorage.getItem('current-profile') || 'default';
+	 select.innerHTML = '';
+	 
+	 var profiles = ['default'];
+	 for (var i = 0; i < localStorage.length; i++) {
+		 var key = localStorage.key(i);
+		 if (key.startsWith('profile-') && key !== 'profile-default') {
+			 profiles.push(key.replace('profile-', ''));
+		 }
+	 }
+	 
+	 profiles.forEach(function(profile) {
+		 var option = document.createElement('option');
+		 option.value = profile;
+		 option.textContent = profile;
+		 if (profile === currentProfile) {
+			 option.selected = true;
+		 }
+		 select.appendChild(option);
+	 });
+	 
+	 select.onchange = function() {
+		 localStorage.setItem('current-profile', select.value);
+		 loadParameters();
+		 updateAllCommands();
+	 };
+ }
+
+ // Command History Functions
+ function addToHistory(command) {
+	 var history = JSON.parse(localStorage.getItem('command-history') || '[]');
+	 var entry = {
+		 command: command,
+		 timestamp: new Date().toISOString()
+	 };
+	 history.unshift(entry);
+	 if (history.length > 50) history = history.slice(0, 50);
+	 localStorage.setItem('command-history', JSON.stringify(history));
+	 updateHistoryDisplay();
+ }
+
+ function updateHistoryDisplay() {
+	 var history = JSON.parse(localStorage.getItem('command-history') || '[]');
+	 var historyList = document.getElementById('history-list');
+	 
+	 if (history.length === 0) {
+		 historyList.innerHTML = '<p style="color: #999; font-size: 12px;">No commands copied yet</p>';
+		 return;
+	 }
+	 
+	 historyList.innerHTML = history.map(function(entry) {
+		 var date = new Date(entry.timestamp);
+		 var timeStr = date.toLocaleTimeString() + ' - ' + date.toLocaleDateString();
+		 return '<div class="history-item">' +
+			 '<div class="time">' + timeStr + '</div>' +
+			 '<div class="command">' + entry.command + '</div>' +
+			 '</div>';
+	 }).join('');
+ }
+
+ function clearHistory() {
+	 if (confirm('Clear all command history?')) {
+		 localStorage.removeItem('command-history');
+		 updateHistoryDisplay();
+	 }
+ }
+
+ function toggleHistory() {
+	 var panel = document.getElementById('history-panel');
+	 if (panel.style.display === 'none') {
+		 panel.style.display = 'block';
+		 updateHistoryDisplay();
+	 } else {
+		 panel.style.display = 'none';
+	 }
+ }
+
+ // Favorites Functions
+ function toggleFavorite(commandUrl) {
+	 var favorites = JSON.parse(localStorage.getItem('command-favorites') || '[]');
+	 var starElement = document.getElementById(commandUrl + '_star');
+	 var commandElement = document.getElementById(commandUrl);
+	 
+	 if (!commandElement) {
+		 console.error('Command element not found:', commandUrl);
+		 return;
+	 }
+	 
+	 // Get the original command text from the data attribute or innerText
+	 var commandText = commandElement.getAttribute('data-original') || commandElement.innerText;
+	 
+	 var existingIndex = favorites.findIndex(f => f.url === commandUrl);
+	 
+	 if (existingIndex >= 0) {
+		 // Remove from favorites
+		 favorites.splice(existingIndex, 1);
+		 starElement.innerHTML = '☆';
+		 starElement.classList.remove('active');
+		 starElement.title = 'Add to favorites';
+	 } else {
+		 // Add to favorites
+		 favorites.push({
+			 url: commandUrl,
+			 command: commandText,
+			 timestamp: new Date().toISOString()
+		 });
+		 starElement.innerHTML = '★';
+		 starElement.classList.add('active');
+		 starElement.title = 'Remove from favorites';
+	 }
+	 
+	 localStorage.setItem('command-favorites', JSON.stringify(favorites));
+	 updateFavoritesDisplay();
+ }
+
+ function updateFavoritesDisplay() {
+	 var favorites = JSON.parse(localStorage.getItem('command-favorites') || '[]');
+	 var favoritesList = document.getElementById('favorites-list');
+	 
+	 if (favorites.length === 0) {
+		 favoritesList.innerHTML = '<p style="color: #999; font-size: 12px;">No favorites yet. Click the star (☆) next to any command to add it.</p>';
+		 return;
+	 }
+	 
+	 favoritesList.innerHTML = favorites.map(function(fav) {
+		 var replacedCommand = replaceParameters(fav.command, false);
+		 return '<div class="favorite-item">' +
+			 '<div class="command">' + replacedCommand + '</div>' +
+			 '<div class="actions">' +
+			 '<button onclick="copyFavorite(\'' + fav.command + '\')">Copy</button>' +
+			 '<button onclick="removeFavorite(\'' + fav.url + '\')">Remove</button>' +
+			 '</div>' +
+			 '</div>';
+	 }).join('');
+ }
+
+ function copyFavorite(commandText) {
+	 var textToCopy = replaceParameters(commandText, false);
+	 navigator.clipboard.writeText(textToCopy).then(() => {
+		 addToHistory(textToCopy);
+		 alert('Command copied to clipboard!');
+	 }, () => {
+		 console.log("copy failed");
+	 });
+ }
+
+ function removeFavorite(commandUrl) {
+	 var favorites = JSON.parse(localStorage.getItem('command-favorites') || '[]');
+	 favorites = favorites.filter(f => f.url !== commandUrl);
+	 localStorage.setItem('command-favorites', JSON.stringify(favorites));
+	 
+	 var starElement = document.getElementById(commandUrl + '_star');
+	 if (starElement) {
+		 starElement.innerHTML = '☆';
+		 starElement.classList.remove('active');
+		 starElement.title = 'Add to favorites';
+	 }
+	 
+	 updateFavoritesDisplay();
+ }
+
+ function clearFavorites() {
+	 if (confirm('Clear all favorites?')) {
+		 localStorage.removeItem('command-favorites');
+		 
+		 // Reset all stars
+		 {% for file in site.wadcoms %}
+		 var star = document.getElementById("{{ file.url }}_star");
+		 if (star) {
+			 star.innerHTML = '☆';
+			 star.classList.remove('active');
+			 star.title = 'Add to favorites';
+		 }
+		 {% endfor %}
+		 
+		 updateFavoritesDisplay();
+	 }
+ }
+
+ function toggleFavorites() {
+	 var panel = document.getElementById('favorites-panel');
+	 if (panel.style.display === 'none') {
+		 panel.style.display = 'block';
+		 updateFavoritesDisplay();
+	 } else {
+		 panel.style.display = 'none';
+	 }
+ }
+
+ function loadFavoriteStars() {
+	 var favorites = JSON.parse(localStorage.getItem('command-favorites') || '[]');
+	 favorites.forEach(function(fav) {
+		 var starElement = document.getElementById(fav.url + '_star');
+		 if (starElement) {
+			 starElement.innerHTML = '★';
+			 starElement.classList.add('active');
+			 starElement.title = 'Remove from favorites';
+		 }
+	 });
+ }
+
  function copyFunction(file_url) {
 	 var copyCommand = document.getElementById(file_url);
+	 var textToCopy = replaceParameters(copyCommand.innerText);
 
-	 navigator.clipboard.writeText(copyCommand.innerText).then(() => {
+	 navigator.clipboard.writeText(textToCopy).then(() => {
 		 {% for file in site.wadcoms %}
 		 document.getElementById("{{ file.url }}_img").alt = "Copy";
 		 document.getElementById("{{ file.url }}_img").title = "Copy";
 		 {% endfor %}
 		 document.getElementById(file_url + "_img").alt = "Copied";
 		 document.getElementById(file_url + "_img").title = "Copied";
+		 
+		 // Add to history
+		 addToHistory(textToCopy);
 	 }, () => {
 		 console.log("copy failed");
 	 });
@@ -276,6 +877,22 @@
  function setup() {
      var searchBox = document.getElementById('bin-search');
 
+     // Load profile list and parameters
+     loadProfileList();
+     loadParameters();
+     
+     // Load favorite stars
+     loadFavoriteStars();
+
+     // Add event listeners to parameter inputs
+     var paramInputs = ['param-target-ip', 'param-attacker-ip', 'param-domain', 'param-username', 'param-password'];
+     paramInputs.forEach(function(inputId) {
+         var input = document.getElementById(inputId);
+         if (input) {
+             input.addEventListener('input', updateAllCommands);
+         }
+     });
+
      // ensure height during filtering
      var binTableWrapper = document.getElementById('bin-table-wrapper');
      binTableWrapper.style.height = binTableWrapper.clientHeight + 'px';
@@ -289,6 +906,11 @@
 
      // handle shortcuts
      addEventListener('keydown', function (event) {
+         // Don't intercept if user is typing in an input field
+         if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+             return;
+         }
+         
          // focus search box on valid keydown
          if (event.key.toLowerCase().match(/^[+a-z]$/) &&
              !(event.ctrlKey || event.altKey || event.metaKey)) {
@@ -308,6 +930,9 @@
 
      // trigger filter on page load
      applyFilter();
+
+     // Update commands with any saved parameters
+     updateAllCommands();
  }
 
  setup();

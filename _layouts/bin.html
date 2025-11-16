@@ -10,11 +10,84 @@ layout: common
 
 {{ page.description | markdownify }}
 
+<style>
+.param-inputs {
+	background: #f5f5f5;
+	padding: 15px;
+	margin-bottom: 20px;
+	border-radius: 5px;
+	border: 1px solid #ddd;
+}
+.param-inputs h3 {
+	margin-top: 0;
+	margin-bottom: 10px;
+	color: #333;
+}
+.param-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 10px;
+}
+.param-field {
+	display: flex;
+	flex-direction: column;
+}
+.param-field label {
+	font-size: 12px;
+	font-weight: bold;
+	margin-bottom: 3px;
+	color: #555;
+}
+.param-field input {
+	padding: 6px 8px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	font-size: 13px;
+}
+.param-field input:focus {
+	outline: none;
+	border-color: #07bf07;
+}
+.highlight-replaced {
+	background-color: #d4f4dd;
+	padding: 2px 4px;
+	border-radius: 2px;
+	font-weight: 500;
+	color: #07bf07;
+}
+</style>
+
+<div class="param-inputs">
+	<h3>Custom Parameters (auto-replaces in command)</h3>
+	<div class="param-grid">
+		<div class="param-field">
+			<label for="param-target-ip">Target IP:</label>
+			<input type="text" id="param-target-ip" placeholder="10.10.10.1" />
+		</div>
+		<div class="param-field">
+			<label for="param-attacker-ip">Attacker IP:</label>
+			<input type="text" id="param-attacker-ip" placeholder="10.10.10.2" />
+		</div>
+		<div class="param-field">
+			<label for="param-domain">Domain:</label>
+			<input type="text" id="param-domain" placeholder="test.local" />
+		</div>
+		<div class="param-field">
+			<label for="param-username">Username:</label>
+			<input type="text" id="param-username" placeholder="john" />
+		</div>
+		<div class="param-field">
+			<label for="param-password">Password:</label>
+			<input type="text" id="param-password" placeholder="password123" />
+		</div>
+	</div>
+</div>
+
 Command:
 <a href="javascript:void(0)" onClick="copyFunction_com()" style="float: right; margin-bottom: -10px;"><img src="/assets/copy-button.svg" alt="Copy" title="Copy" id="code_img"/></a>
 <ul class="examples">
     <li>
-	<pre><code id="code_text">{{ page.command | escape }}</code></pre>
+	<pre><code id="code_text" data-original="{{ page.command | escape }}">{{ page.command | escape }}</code></pre>
     </li>
 
 </ul>
@@ -29,14 +102,124 @@ References:
 {% endfor %}
 <script>
 
-function copyFunction_com() {
-	 var copyCommand = document.getElementById("code_text");
+// Function to replace parameters in command text
+function replaceParameters(commandText, withHighlight = false) {
+	var targetIP = document.getElementById('param-target-ip').value;
+	var attackerIP = document.getElementById('param-attacker-ip').value;
+	var domain = document.getElementById('param-domain').value;
+	var username = document.getElementById('param-username').value;
+	var password = document.getElementById('param-password').value;
 
-	 navigator.clipboard.writeText(copyCommand.innerText.replace(/\n+$/, "")).then(() => {
-		 document.getElementById("code_img").alt = "Copied";
-		 document.getElementById("code_img").title = "Copied";
-	 }, () => {
-		 console.log("copy failed");
-	 });
+	var result = commandText;
+
+	// Replace target IP (10.10.10.1)
+	if (targetIP) {
+		var replacement = withHighlight ? '<span class="highlight-replaced">' + targetIP + '</span>' : targetIP;
+		result = result.replace(/10\.10\.10\.1/g, replacement);
+	}
+
+	// Replace attacker IP (10.10.10.2)
+	if (attackerIP) {
+		var replacement = withHighlight ? '<span class="highlight-replaced">' + attackerIP + '</span>' : attackerIP;
+		result = result.replace(/10\.10\.10\.2/g, replacement);
+	}
+
+	// Replace domain (test.local)
+	if (domain) {
+		var replacement = withHighlight ? '<span class="highlight-replaced">' + domain + '</span>' : domain;
+		result = result.replace(/test\.local/g, replacement);
+	}
+
+	// Replace username (john)
+	if (username) {
+		var replacement = withHighlight ? '<span class="highlight-replaced">' + username + '</span>' : username;
+		result = result.replace(/\bjohn\b/g, replacement);
+	}
+
+	// Replace password (password123)
+	if (password) {
+		var replacement = withHighlight ? '<span class="highlight-replaced">' + password + '</span>' : password;
+		result = result.replace(/password123/g, password);
+	}
+
+	return result;
 }
+
+// Function to update the displayed command
+function updateCommand() {
+	var codeElement = document.getElementById("code_text");
+	var originalCommand = codeElement.getAttribute('data-original');
+	codeElement.innerHTML = replaceParameters(originalCommand, true);
+	
+	// Save parameters to localStorage
+	saveParameters();
+}
+
+// Save parameters to localStorage
+function saveParameters() {
+	localStorage.setItem('param-target-ip', document.getElementById('param-target-ip').value);
+	localStorage.setItem('param-attacker-ip', document.getElementById('param-attacker-ip').value);
+	localStorage.setItem('param-domain', document.getElementById('param-domain').value);
+	localStorage.setItem('param-username', document.getElementById('param-username').value);
+	localStorage.setItem('param-password', document.getElementById('param-password').value);
+}
+
+// Load parameters from localStorage (profile-aware)
+function loadParameters() {
+	var currentProfile = localStorage.getItem('current-profile') || 'default';
+	var profileKey = 'profile-' + currentProfile;
+	var profileData = localStorage.getItem(profileKey);
+	
+	if (profileData) {
+		var data = JSON.parse(profileData);
+		document.getElementById('param-target-ip').value = data.targetIP || '';
+		document.getElementById('param-attacker-ip').value = data.attackerIP || '';
+		document.getElementById('param-domain').value = data.domain || '';
+		document.getElementById('param-username').value = data.username || '';
+		document.getElementById('param-password').value = data.password || '';
+	}
+}
+
+// Add to command history
+function addToHistory(command) {
+	var history = JSON.parse(localStorage.getItem('command-history') || '[]');
+	var entry = {
+		command: command,
+		timestamp: new Date().toISOString()
+	};
+	history.unshift(entry);
+	if (history.length > 50) history = history.slice(0, 50);
+	localStorage.setItem('command-history', JSON.stringify(history));
+}
+
+function copyFunction_com() {
+	var copyCommand = document.getElementById("code_text");
+	var originalCommand = copyCommand.getAttribute('data-original');
+	var textToCopy = replaceParameters(originalCommand, false).replace(/\n+$/, "");
+
+	navigator.clipboard.writeText(textToCopy).then(() => {
+		document.getElementById("code_img").alt = "Copied";
+		document.getElementById("code_img").title = "Copied";
+		
+		// Add to history
+		addToHistory(textToCopy);
+	}, () => {
+		console.log("copy failed");
+	});
+}
+
+// Initialize on page load
+window.addEventListener('DOMContentLoaded', function() {
+	loadParameters();
+	updateCommand();
+	
+	// Add event listeners to parameter inputs
+	var paramInputs = ['param-target-ip', 'param-attacker-ip', 'param-domain', 'param-username', 'param-password'];
+	paramInputs.forEach(function(inputId) {
+		var input = document.getElementById(inputId);
+		if (input) {
+			input.addEventListener('input', updateCommand);
+		}
+	});
+});
 </script>
